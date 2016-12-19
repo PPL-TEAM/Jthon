@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Piethon online</title>
+<script src="grammar/piethon.js"></script>
+<script src="main.js"></script>
+<script src="examples.js"></script>
+<link rel="stylesheet" type="text/css" media="screen" href="styles.css">
+
+	<script src="//cdn.bootcss.com/jquery/1.9.1/jquery.min.js"></script>
+	<script src="//cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+</head>
+<body>
+<div id="editor" color="3DEFBC2" ># Say hello!
+x = "Hello, python"
+print x
+</div>
+<div id="navbar">
+
+
+	<select id="examples" name="Examples" style="	position: absolute;top: 20px;left: 100px; height: 20px">
+	  <option value="-1">Examples</option>
+	</select>
+
+</div>
+<div id="console">
+
+</div>
+
+<script src="lib/jquery.js" type="text/javascript" charset="utf-8"></script>
+<script src="lib/jqconsole.js" type="text/javascript" charset="utf-8"></script>
+<script src="lib/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+	// Set up the console
+	var jqconsole = $('#console').jqconsole('', '>>>');
+	var startPrompt = function () {
+	  // Start the prompt with history enabled.
+	  jqconsole.Prompt(true, function (input) {
+	    // Output input with the class jqconsole-output.
+	    jqconsole.Write(input + '\n', 'jqconsole-output');
+	    // Restart the prompt.
+	    startPrompt();
+	  });
+	};
+	//startPrompt();
+	jqconsole.Write('>> ','jqconsole-output');
+	// Set up the editor
+	var editor = ace.edit("editor");
+	//editor.setTheme("ace/theme/idle_fingers");
+	editor.getSession().setMode("ace/mode/python");
+
+	// Handle run button interaction
+	$( "#runbtn" ).click(function() {
+		resetForRun();
+		try {
+			// Grammar is not perfect, have to have it end with a line break
+			var output = piethon.parse(editor.getValue()+'\n')
+			if(output == true) {
+				jqconsole.Write('js-python\nSyntactically correct: '+output+'\nexecuted result:\n', 'jqconsole-output');
+				eval(finalprogram);
+				jqconsole.Write('\n', 'jqconsole-output');
+			} 
+		} catch(exception) {
+			jqconsole.Write(exception + '\n\n', 'jqconsole-output');
+		}
+		jqconsole.Write('>> ','jqconsole-output');
+	});
+
+
+
+/*
+	// Handle run button interaction
+	$( "#button1" ).click(function() {
+		resetForRun();
+		try {
+			// Grammar is not perfect, have to have it end with a line break
+			var output = piethon.parse(editor.getValue()+'\n')
+			if(output == true) {
+				jqconsole.Write('js-python\nSyntactically correct: '+output+'\nexecuted result:\n', 'jqconsole-output');
+				eval(finalprogram);
+				jqconsole.Write('\n', 'jqconsole-output');
+			}
+		} catch(exception) {
+			jqconsole.Write(exception + '\n\n', 'jqconsole-output');
+		}
+		jqconsole.Write('>> ','jqconsole-output');
+	});
+
+*/
+	function run(){
+
+		resetForRun();
+		try {
+			// Grammar is not perfect, have to have it end with a line break
+			var output = piethon.parse(editor.getValue()+'\n')
+			if(output == true) {
+				jqconsole.Write('js-python\nSyntactically correct: '+output+'\nexecuted result:\n', 'jqconsole-output');
+				eval(finalprogram);
+				jqconsole.Write('\n', 'jqconsole-output');
+			}
+		} catch(exception) {
+			jqconsole.Write(exception.message + '\n\n', 'jqconsole-output');
+		}
+		jqconsole.Write('>> ','jqconsole-output');
+	}
+
+
+
+
+
+
+
+	// Populate the dropdown examples select
+	var select = $('#examples');
+	for(var i =0;i<examples.length;i++) {
+		select.append('<option value="'+i+'">'+examples[i].name+'</option>');
+	}
+	select.change(function() {
+		var selectedndx = parseInt($( "#examples option:selected" ).attr('value'), 10);
+		if(selectedndx > -1) {
+			editor.setValue(examples[selectedndx].code);
+			editor.gotoLine(1);
+		}
+	});
+	 
+	
+</script>
+
+<button id="button1" type="button" onclick="run()" class="btn btn-default navbar-btn"  style="	position: absolute; top: 420px; left : 720px; height: 20px">Run</button>
+
+
+</body>
+</html>
