@@ -176,6 +176,13 @@ line
 		var arr = new AstNode('array', {value : $5.reverse()});
 		$$ = new AstNode('=', {left :lf, right : arr});
 	}
+
+	| line id '=' '(' parm_list ')' {
+		// Turple creation and assignment
+		var lf= new AstNode('IDENT', {name : $2});
+		var arr = new AstNode('turple', {value : $5.reverse()});
+		$$ = new AstNode('=', {left :lf, right : arr});
+	}
 	
 	| line id '.' id '(' expr ')' { 
 		// Method dispatch, with single argument

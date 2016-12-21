@@ -65,6 +65,24 @@ function eval(astNode) {
 			}
 			v = vec;
 			break;
+		case 'turple':
+			var s = new Set();
+
+			var members = astNode.value;
+			for (var i = 0; i < members.length; i++) {
+				if (!members[i].name) {
+					s.add(members[i].value);
+				}
+				else {
+                    var identifierValue = executionstack.top()[members[i].name];
+                    if(!members[i].name in executionstack.top()) {
+                        throw "NameError: name '"+members[i].name+"' is not defined in list declaration\n";
+                    }
+                    s.delete(identifierValue);
+				}
+			}
+			v = s;
+			break;
 		case 'arrayindex':
 			// Handle rhs of a array index value retrieval
 			var identifierValue = executionstack.top()[astNode.name];
@@ -92,6 +110,7 @@ function eval(astNode) {
 			if(!astNode.name in executionstack.top()) {
 				throw "NameError: name '"+astNode.name+"' is not defined in list declaration\n";
 			}
+
 			if(!Array.isArray(identifierValue)) {
 				throw "AttributeError: '"+(typeof identifierValue)+"' object has no attribute '"+astNode.method+"'";
 			}
@@ -272,7 +291,14 @@ function eval(astNode) {
 		case 'print':	
 			v = eval(astNode.left);
 			var strPrint;
-			if(Array.isArray(v)) {
+			if (v instanceof Set) {
+				strPrint = "(";
+				v.forEach(function(element){
+					strPrint += element + ",";
+				});
+				strPrint += ')';
+			}
+			else if(Array.isArray(v)) {
 				strPrint = '['+v.toString()+']';
 			} else {
 
@@ -287,7 +313,14 @@ function eval(astNode) {
 		case '+': 
 			left = eval(astNode.left);
 			right = eval(astNode.right);
-			v = (left + right); 	
+            if ((left instanceof Set) && (right instanceof Set)){
+                v = left;
+                right.forEach(function(element) {
+                    v.add(element);
+                });
+            } else {
+                v = (left + right);
+            }
 			break;
 		case '-': 
 			left = eval(astNode.left);
