@@ -49,6 +49,8 @@
 "while"					return 'while';
 "break"					return 'break';
 "continue"				return 'continue';
+"{"                     return '{'
+"}"                     return '}'
 
 
 [0-9]+("."[0-9]+)?\b  	{return 'NUMBER';}
@@ -99,6 +101,18 @@ parm_list
 		$$ = $3;
 	}
 	| { $$ = []; }
+;
+
+dic_list
+    : num ':' num {
+        $$ = [];
+        $$.push({key: $1, name : null, value : $3})
+    }
+    | num ':' num ',' dic_list {
+        $5.push({key: $1, name : null, value : $3})
+        $$ = $5;
+    }
+    | { $$ = []; }
 ;
 
 stmt    
@@ -183,7 +197,14 @@ line
 		var arr = new AstNode('turple', {value : $5.reverse()});
 		$$ = new AstNode('=', {left :lf, right : arr});
 	}
-	
+
+	| line id '=' '{' dic_list '}' {
+		// Turple creation and assignment
+		var lf= new AstNode('IDENT', {name : $2});
+		var arr = new AstNode('dictionary', {value : $5.reverse()});
+		$$ = new AstNode('=', {left :lf, right : arr});
+	}
+
 	| line id '.' id '(' expr ')' { 
 		// Method dispatch, with single argument
 		$$ = new AstNode('method', { name : $2, method : $4, argument : $6});
@@ -226,6 +247,8 @@ expr
 	| id '[' expr ']' { $$ = new AstNode('arrayindex', {name : $1, index : $3}); }
 	| 'len' '(' id ')' {$$ = new AstNode('len', {name : $3});}
 	| 'STRING' {$$ = new AstNode('STRING', {value: yytext}); }
+	| id '.' id '(' expr ')' {$$ = new AstNode('method', {name : $1, method : $3, argument : $5}); }
+	| id '[' expr ':' expr ']' {$$ = new AstNode('cut', {name : $1, arg0 : $3, arg1 : $5}); }
 	;
 
 id 

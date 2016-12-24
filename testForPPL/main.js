@@ -35,6 +35,9 @@ function AstNode(type, params) {
 function eval(astNode) {
 	
 	var v;
+	var TYPE_LIST = 1;
+	var TYPE_TURPLE = 2;
+	// var TYPE_DIC = 3;
 	switch(astNode.type) {
 		case 'function': 
 			// Function only has a left branch
@@ -50,6 +53,7 @@ function eval(astNode) {
 			// Handle the right hand side of an array declaration
 			// Set the values to real values
 			var vec = [];
+			vec.datatype = TYPE_LIST;
 			
 			var members = astNode.value;
 			for(var i=0;i<members.length;i++) {
@@ -66,30 +70,78 @@ function eval(astNode) {
 			v = vec;
 			break;
 		case 'turple':
-			var s = new Set();
+            var vec = [];
+            vec.datatype = TYPE_TURPLE;
 
-			var members = astNode.value;
-			for (var i = 0; i < members.length; i++) {
-				if (!members[i].name) {
-					s.add(members[i].value);
-				}
-				else {
+            var members = astNode.value;
+            for(var i=0;i<members.length;i++) {
+                if(!members[i].name) {
+                    vec.push(members[i].value);
+                } else {
                     var identifierValue = executionstack.top()[members[i].name];
                     if(!members[i].name in executionstack.top()) {
                         throw "NameError: name '"+members[i].name+"' is not defined in list declaration\n";
                     }
-                    s.delete(identifierValue);
-				}
-			}
-			v = s;
+                    vec.push(identifierValue);
+                }
+            }
+            v = vec;
 			break;
+        case 'dictionary':
+            // Handle the right hand side of an dictionary declaration
+            // Set the values to real values
+            // var vec = new Array();
+            var vec = {};
+            //vec.datatype = TYPE_DIC;
+
+            var members = astNode.value;
+            for(var i=0;i<members.length;i++) {
+                if(!members[i].name) {
+                	if (vec[members[i].key] == null)
+                		vec[members[i].key] = members[i].value;
+                	else
+                		throw "NameError: name " + members[i].key + " redifined\n";
+                }
+             }
+             v = vec;
+            break;
 		case 'arrayindex':
 			// Handle rhs of a array index value retrieval
 			var identifierValue = executionstack.top()[astNode.name];
 			if(!astNode.name in executionstack.top()) {
 				throw "NameError: name '"+astNode.name+"' is not defined\n";
 			}
-			v = identifierValue[parseInt(eval(astNode.index))]
+
+			if (Object.prototype.toString.call(identifierValue).toLowerCase() == "[object object]") {
+				v = identifierValue[astNode.index];
+            }
+            else {
+                v = identifierValue[parseInt(eval(astNode.index))];
+            }
+			break;
+		case 'cut':
+            var identifierValue = executionstack.top()[astNode.name];
+            if(!astNode.name in executionstack.top()) {
+                throw "NameError: name '"+astNode.name+"' is not defined\n";
+            }
+            if(!Array.isArray(identifierValue)) {
+                throw "TypeError: object '"+astNode.name+"' has no cut\n";
+            }
+
+			if (eval(astNode.arg0) < eval(astNode.arg1)) {
+            	if ((eval(astNode.arg0) < 0) || (eval(astNode.arg1) > identifierValue.length))
+            		throw "ArrayOverflow";
+            	else {
+            		var vec = [];
+            		for (i = eval(astNode.arg0); i < eval(astNode.arg1); i++) {
+            			vec.push(identifierValue[i]);
+					}
+					v = vec;
+				}
+			}
+			else {
+            	throw "ArgumentError: arg0 must be less than arg1\n"
+			}
 			break;
 		case 'len':
 			// Handle len()
@@ -111,19 +163,49 @@ function eval(astNode) {
 				throw "NameError: name '"+astNode.name+"' is not defined in list declaration\n";
 			}
 
-			if(!Array.isArray(identifierValue)) {
-				throw "AttributeError: '"+(typeof identifierValue)+"' object has no attribute '"+astNode.method+"'";
-			}
+			if (Object.prototype.toString.call(identifierValue).toLowerCase() == "[object object]") {
+			    // dictionary
 
-			if(astNode.method == "append") {
-				identifierValue.push(eval(astNode.argument));
-			} else if(astNode.method == "pop") {
-				identifierValue.pop();				
-			} else {
-				throw "AttributeError: '"+astNode.name+"' has no method '"+astNode.method+"'";
-			}
-			
-			break;	
+            }
+            else if (Array.isArray(identifierValue)) {
+				if (identifierValue.datatype == TYPE_LIST) {
+                    // list
+                    if (astNode.method == "append") {
+                        identifierValue.push(eval(astNode.argument));
+                    } else if (astNode.method == "pop") {
+                        identifierValue.pop();
+                    } else {
+                        throw "AttributeError: '" + astNode.name + "' has no method '" + astNode.method + "'";
+                    }
+                }
+                else if (identifierValue.datatype == TYPE_TURPLE) {
+					// turple
+					if (astNode.method == "count") {
+						// count
+						var sum = 0;
+						for (var i = 0; i < identifierValue.length; i++) {
+							if (identifierValue[i] == eval(astNode.argument)) sum = sum + 1;
+						}
+						v = sum;
+					}
+					else if (astNode.method == "index") {
+						// index
+						if (eval(astNode.argument) < identifierValue.length) {
+							v = identifierValue[eval(astNode.argument)];
+						}
+						else {
+							throw "ArrayOverflow";
+						}
+					}
+					else {
+                        throw "AttributeError: '" + astNode.name + "' has no method '" + astNode.method + "'";
+                    }
+				}
+            }
+            else {
+                throw "AttributeError: '"+(typeof identifierValue)+"' object has no attribute '"+astNode.method+"'";
+            }
+            break;
 		case 'FunctionCall':
 			// Get function node and evaluate it
 			funcName = astNode.name;
@@ -226,7 +308,9 @@ function eval(astNode) {
 			// Set value of identifier in table
 			if(astNode.left.type == 'arrayindex') {
 				var vec2 = executionstack.top()[astNode.left.name];
-				vec2[parseInt(eval(astNode.left.index))] = eval(astNode.right);
+
+				if (vec2.datatype == TYPE_LIST)
+					vec2[parseInt(eval(astNode.left.index))] = eval(astNode.right);
 			} else {
 				console.log("11111111");
 				if(globalexecutionstack.check(astNode.left.name)==true) {
@@ -291,17 +375,20 @@ function eval(astNode) {
 		case 'print':	
 			v = eval(astNode.left);
 			var strPrint;
-			if (v instanceof Set) {
-				strPrint = "(";
-				v.forEach(function(element){
-					strPrint += element + ",";
-				});
-				strPrint += ')';
-			}
-			else if(Array.isArray(v)) {
-				strPrint = '['+v.toString()+']';
-			} else {
 
+			if (Object.prototype.toString.call(v).toLowerCase() == "[object object]") {
+			    strPrint = "{";
+			    for (var key in v) {
+			        strPrint += key + ":" + v[key] + ",";
+                }
+                strPrint += "}"
+            }
+			else if(Array.isArray(v)) {
+				if (v.datatype == TYPE_LIST)
+					strPrint = '['+v.toString()+']';
+				else
+					strPrint = '(' + v.toString() + ')';
+			} else {
 				strPrint = v;
 			}
 			// Print 
@@ -313,11 +400,16 @@ function eval(astNode) {
 		case '+': 
 			left = eval(astNode.left);
 			right = eval(astNode.right);
-            if ((left instanceof Set) && (right instanceof Set)){
-                v = left;
-                right.forEach(function(element) {
-                    v.add(element);
+            if ((Array.isArray(left)) && (Array.isArray(right))){
+            	var vec = [];
+                left.forEach(function(element) {
+                    vec.push(element);
                 });
+                right.forEach(function(element) {
+                    vec.push(element);
+                });
+                v = vec;
+                v.datatype = left.datatype;
             } else {
                 v = (left + right);
             }
