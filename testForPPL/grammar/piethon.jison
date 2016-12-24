@@ -14,7 +14,11 @@
 <OTHER_COMMENT>\n       	{ this.begin('INITIAL'); }
 <OTHER_COMMENT>.          	{ ; }
 
-
+"*="                    return '*=';
+"+="                    return '+=';
+"-="                    return '-=';
+"/="                    return '/=';
+"%="                    return '%=';
 "**"                   	return '**';
 "/"                   	return '/';
 "-"                   	return '-';
@@ -56,6 +60,7 @@
 [0-9]+("."[0-9]+)?\b  	{return 'NUMBER';}
 [a-zA-Z]([a-zA-Z]|[0-9])* { return 'IDENT';}
 '"'.*?'"'			{ console.log(yytext); return 'STRING';}
+"'".*?"'"		{ console.log(yytext); return 'STRING';}
 \n						{ return 'CR';}
 .                     	{ ; }
 
@@ -164,6 +169,36 @@ line
 		var lf= new AstNode('IDENT', {name : $2});	
 		$$ = new AstNode('=', {left : lf, right : $4});
 		console.log("motherfucker");
+	}
+	
+	| line id '+=' expr	{
+		// Identifier assigment	
+		var lf= new AstNode('IDENT', {name : $2});	
+		$$ = new AstNode('+=', {left : lf, right : $4});
+	}
+
+	| line id '-=' expr	{
+		// Identifier assigment	
+		var lf= new AstNode('IDENT', {name : $2});	
+		$$ = new AstNode('-=', {left : lf, right : $4});
+	}
+
+	| line id '*=' expr	{
+		// Identifier assigment	
+		var lf= new AstNode('IDENT', {name : $2});	
+		$$ = new AstNode('*=', {left : lf, right : $4});
+	}
+
+	| line id '/=' expr	{
+		// Identifier assigment	
+		var lf= new AstNode('IDENT', {name : $2});	
+		$$ = new AstNode('/=', {left : lf, right : $4});
+	}
+
+	| line id '%=' expr	{
+		// Identifier assigment	
+		var lf= new AstNode('IDENT', {name : $2});	
+		$$ = new AstNode('%=', {left : lf, right : $4});
 	}
 	
 	| line id '[' expr ']' '=' expr { 

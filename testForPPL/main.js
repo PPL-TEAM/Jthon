@@ -326,6 +326,56 @@ function eval(astNode) {
 				}
 			}
 			break;
+		case '+=':
+				if(globalexecutionstack.check(astNode.left.name)==true) {
+					 globalexecutionstack.top()[astNode.left.name] += eval(astNode.right);
+
+				}
+				else {
+					executionstack.top()[astNode.left.name] += eval(astNode.right);
+
+				}
+			 break;
+		case '-=':
+				if(globalexecutionstack.check(astNode.left.name)==true) {
+					 globalexecutionstack.top()[astNode.left.name] -= eval(astNode.right);
+
+				}
+				else {
+					executionstack.top()[astNode.left.name] -= eval(astNode.right);
+
+				}			
+			break;	   
+		case '*=':
+				if(globalexecutionstack.check(astNode.left.name)==true) {
+					 globalexecutionstack.top()[astNode.left.name] *= eval(astNode.right);
+
+				}
+				else {
+					executionstack.top()[astNode.left.name] *= eval(astNode.right);
+
+				}			
+			break;	   
+		case '/=':
+				if(globalexecutionstack.check(astNode.left.name)==true) {
+					 globalexecutionstack.top()[astNode.left.name] /= eval(astNode.right);
+
+				}
+				else {
+					executionstack.top()[astNode.left.name] /= eval(astNode.right);
+
+				}			
+			break;
+		case '%=':
+				if(globalexecutionstack.check(astNode.left.name)==true) {
+					 globalexecutionstack.top()[astNode.left.name] %= eval(astNode.right);
+
+				}
+				else {
+					executionstack.top()[astNode.left.name] %= eval(astNode.right);
+
+				}			
+			break;	   	      	   
 		case '>':
 			if(eval(astNode.left) >  eval(astNode.right)) {
 				v = true;
@@ -396,7 +446,7 @@ function eval(astNode) {
 			break;
 		case 'return': v = eval(astNode.left); break; 
 		case 'NUMBER': v = astNode.value; break;
-		case 'STRING': v = astNode.value.replace(/\"/g,''); break;
+		case 'STRING': v = astNode.value.replace(/["']/g,''); break;
 		case '+': 
 			left = eval(astNode.left);
 			right = eval(astNode.right);
@@ -422,7 +472,16 @@ function eval(astNode) {
 		case '*': 
 			left = eval(astNode.left);
 			right = eval(astNode.right);
-			v = (left * right); 	
+			if (typeof left === 'string') {
+				v = left.repeat(right);
+				//for (var i=1; i<right; i++)
+				//v += left;
+			}else if(typeof right === 'string'){
+                v = right.repeat(left);
+			} 
+			else {
+				v = (left * right);
+			}			 	
 		break;
 		case '/': 
 			left = eval(astNode.left);
