@@ -113,7 +113,8 @@ function eval(astNode) {
 			}
 
 			if (Object.prototype.toString.call(identifierValue).toLowerCase() == "[object object]") {
-				v = identifierValue[astNode.index];
+				v = identifierValue[parseInt(astNode.index.value)];
+				// v = (astNode.index.value);
             }
             else {
                 v = identifierValue[parseInt(eval(astNode.index))];
@@ -163,8 +164,15 @@ function eval(astNode) {
 				throw "NameError: name '"+astNode.name+"' is not defined in list declaration\n";
 			}
 
+			console.log("method");
 			if (Object.prototype.toString.call(identifierValue).toLowerCase() == "[object object]") {
 			    // dictionary
+				if (astNode.method == "haskey") {
+					if (parseInt(eval(astNode.argument)) in identifierValue)
+                        v = 1;
+					else
+						v = 0;
+				}
 
             }
             else if (Array.isArray(identifierValue)) {
@@ -311,7 +319,11 @@ function eval(astNode) {
 
 				if (vec2.datatype == TYPE_LIST)
 					vec2[parseInt(eval(astNode.left.index))] = eval(astNode.right);
-			} else {
+				else if (Object.prototype.toString.call(vec2).toLowerCase() == "[object object]") {
+					vec2[parseInt(astNode.left.index.value)] = eval(astNode.right);
+                }
+			}
+			else {
 				console.log("11111111");
 				if(globalexecutionstack.check(astNode.left.name)==true) {
 					console.log("222222222222");
