@@ -34,6 +34,15 @@
 	border-top-left-radius: 10px;
 	border-top-right-radius: 10px;">Run</button>
 
+	<button id="button2" type="button"  class="btn btn-primary navbar-btn"  style="background-color:white; margin-top: 10px; margin-right: -100px;width: 100px; height: 30px;
+	border-top: 2px solid cornflowerblue;
+	border-bottom: 2px solid cornflowerblue;
+	border-left:2px solid cornflowerblue ;
+	border-right: 2px solid cornflowerblue;
+	border-bottom-left-radius: 10px ;
+	border-bottom-right-radius: 10px ;
+	border-top-left-radius: 10px;
+	border-top-right-radius: 10px;">Clear</button>
 
 	<select id="examples" name="Examples" style="	margin-top: 10px; margin-left: -700px; height: 30px;
 	border-top: 2px solid lightgoldenrodyellow;
@@ -44,6 +53,7 @@
 	border-bottom-right-radius: 10px ;
 	border-top-left-radius: 10px;
 	border-top-right-radius: 10px;
+
 ">
 		<option value="-1">Examples</option>
 	</select>
@@ -77,43 +87,24 @@
 	editor.getSession().setMode("ace/mode/python");
 
 	// Handle run button interaction
-	$( "#runbtn" ).click(function() {
-		resetForRun();
-		try {
-			// Grammar is not perfect, have to have it end with a line break
-			var output = piethon.parse(editor.getValue()+'\n')
-			if(output == true) {
-				jqconsole.Write('js-python\ncompiled completed\nexecuted result:\n', 'jqconsole-output');
-				eval(finalprogram);
-				jqconsole.Write('\n', 'jqconsole-output');
-			}
-		} catch(exception) {
-			jqconsole.Write(exception + '\n\n', 'jqconsole-output');
-		}
-		jqconsole.Write('>> ','jqconsole-output');
-	});
+//	$( "#runbtn" ).click(function() {
+//		resetForRun();
+//		try {
+//			// Grammar is not perfect, have to have it end with a line break
+//			var output = piethon.parse(editor.getValue()+'\n')
+//			if(output == true) {
+//				jqconsole.Write('js-python\ncompiled completed\nexecuted result:\n', 'jqconsole-output');
+//				eval(finalprogram);
+//				jqconsole.Write('\n', 'jqconsole-output');
+//			}
+//		} catch(exception) {
+//			jqconsole.Write(exception + '\n\n', 'jqconsole-output');
+//		}
+//		jqconsole.Write('>> ','jqconsole-output');
+//	});
 
 
 
-	/*
-	 // Handle run button interaction
-	 $( "#button1" ).click(function() {
-	 resetForRun();
-	 try {
-	 // Grammar is not perfect, have to have it end with a line break
-	 var output = piethon.parse(editor.getValue()+'\n')
-	 if(output == true) {
-	 jqconsole.Write('js-python\nSyntactically correct: '+output+'\nexecuted result:\n', 'jqconsole-output');
-	 eval(finalprogram);
-	 jqconsole.Write('\n', 'jqconsole-output');
-	 }
-	 } catch(exception) {
-	 jqconsole.Write(exception + '\n\n', 'jqconsole-output');
-	 }
-	 jqconsole.Write('>> ','jqconsole-output');
-	 });
-
-	 */
 	function run(){
 
 		resetForRun();
@@ -130,6 +121,10 @@
 		}
 		jqconsole.Write('>> ','jqconsole-output');
 	}
+
+	$("#button2").click(function(){
+		jqconsole.Reset();
+	});
 
 
 
