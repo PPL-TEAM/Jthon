@@ -30,10 +30,10 @@ var examples = [{
 	code : '#list\nx = [1, 2, 4]\ny = [3, 6]\nz = x + y\nprint z\n\na = [1, 2, 3]\na[1] = 7\nprint a\n\nb=a[1]\nprint b\n\nc = [1, 2, 4]\nc.append(10)\nprint c\nc.pop(10)\nprint c\n\nx = [1, 2, 3, 4, 5]\ny = x[2:3]\nprint y\n'
 }, {
 	name : 'dictionary',
-	code : '#dictionary\nx = {1:2, 3:4}\nprint x\n\ny = x[2]\nprint y\n\nx[5] = 7\nprint x\n\nx[1] = 7\nprint x\n\ny = x.haskey(1)\nprint y\n'
+	code : '#dictionary\nx = {1:2, 3:4}\nprint x\n\ny = x[1]\nprint y\n\nx[5] = 7\nprint x\n\nx[1] = 7\nprint x\n\ny = x.haskey(1)\nprint y\n'
 }, {
 	name : 'turple',
-	code : '#turple\nx = (1, 2, 3)\nprint x\ny = x[3]\nprint y\n\nz = x.count(2)\nprint z\n\nm = x.index(1)\nprint m\n'
+	code : '#turple\nx = (1, 2, 3)\nprint x\ny = x[2]\nprint y\n\nz = x.count(2)\nprint z\n\nm = x.index(1)\nprint m\n'
 }];
 
 

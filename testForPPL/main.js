@@ -138,6 +138,7 @@ function eval(astNode) {
             			vec.push(identifierValue[i]);
 					}
 					v = vec;
+					v.datatype == TYPE_LIST;
 				}
 			}
 			else {
@@ -446,10 +447,10 @@ function eval(astNode) {
                 strPrint += "}"
             }
 			else if(Array.isArray(v)) {
-				if (v.datatype == TYPE_LIST)
-					strPrint = '['+v.toString()+']';
-				else
-					strPrint = '(' + v.toString() + ')';
+				if (v.datatype == TYPE_TURPLE)
+                    strPrint = '(' + v.toString() + ')';
+                else
+                	strPrint = '['+v.toString()+']';
 			} else {
 				strPrint = v;
 			}
