@@ -258,15 +258,15 @@ case 31:
 break;
 case 32:
 
-		// Turple creation and assignment
+		// Tuple creation and assignment
 		var lf= new AstNode('IDENT', {name : $$[$0-4]});
-		var arr = new AstNode('turple', {value : $$[$0-1].reverse()});
+		var arr = new AstNode('tuple', {value : $$[$0-1].reverse()});
 		this.$ = new AstNode('=', {left :lf, right : arr});
 	
 break;
 case 33:
 
-		// Turple creation and assignment
+		// Dictionary creation and assignment
 		var lf= new AstNode('IDENT', {name : $$[$0-4]});
 		var arr = new AstNode('dictionary', {value : $$[$0-1].reverse()});
 		this.$ = new AstNode('=', {left :lf, right : arr});

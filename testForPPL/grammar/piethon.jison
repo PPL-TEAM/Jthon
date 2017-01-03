@@ -234,14 +234,14 @@ line
 	}
 
 	| line id '=' '(' parm_list ')' {
-		// Turple creation and assignment
+		// Tuple creation and assignment
 		var lf= new AstNode('IDENT', {name : $2});
-		var arr = new AstNode('turple', {value : $5.reverse()});
+		var arr = new AstNode('tuple', {value : $5.reverse()});
 		$$ = new AstNode('=', {left :lf, right : arr});
 	}
 
 	| line id '=' '{' dic_list '}' {
-		// Turple creation and assignment
+		// Dictionary creation and assignment
 		var lf= new AstNode('IDENT', {name : $2});
 		var arr = new AstNode('dictionary', {value : $5.reverse()});
 		$$ = new AstNode('=', {left :lf, right : arr});

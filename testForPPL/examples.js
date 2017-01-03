@@ -32,8 +32,8 @@ var examples = [{
 	name : 'dictionary',
 	code : '#dictionary\nx = {1:2, 3:4}\nprint x\n\ny = x[1]\nprint y\n\nx[5] = 7\nprint x\n\nx[1] = 7\nprint x\n\ny = x.haskey(1)\nprint y\n'
 }, {
-	name : 'turple',
-	code : '#turple\nx = (1, 2, 3)\nprint x\ny = x[2]\nprint y\n\nz = x.count(2)\nprint z\n\nm = x.index(1)\nprint m\n'
+	name : 'tuple',
+	code : '#tuple\nx = (1, 2, 3)\nprint x\ny = x[2]\nprint y\n\nz = x.count(2)\nprint z\n\nm = x.index(1)\nprint m\n'
 }];
 
 

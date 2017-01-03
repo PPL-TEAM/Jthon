@@ -36,7 +36,7 @@ function eval(astNode) {
 	
 	var v;
 	var TYPE_LIST = 1;
-	var TYPE_TURPLE = 2;
+	var TYPE_TUPLE = 2;
 	// var TYPE_DIC = 3;
 	switch(astNode.type) {
 		case 'function': 
@@ -69,9 +69,9 @@ function eval(astNode) {
 			}
 			v = vec;
 			break;
-		case 'turple':
+		case 'tuple':
             var vec = [];
-            vec.datatype = TYPE_TURPLE;
+            vec.datatype = TYPE_TUPLE;
 
             var members = astNode.value;
             for(var i=0;i<members.length;i++) {
@@ -187,8 +187,8 @@ function eval(astNode) {
                         throw "AttributeError: '" + astNode.name + "' has no method '" + astNode.method + "'";
                     }
                 }
-                else if (identifierValue.datatype == TYPE_TURPLE) {
-					// turple
+                else if (identifierValue.datatype == TYPE_TUPLE) {
+					// tuple
 					if (astNode.method == "count") {
 						// count
 						var sum = 0;
@@ -478,7 +478,7 @@ function eval(astNode) {
                 strPrint += "}"
             }
 			else if(Array.isArray(v)) {
-				if (v.datatype == TYPE_TURPLE)
+				if (v.datatype == TYPE_TUPLE)
                     strPrint = '(' + v.toString() + ')';
                 else
                 	strPrint = '['+v.toString()+']';
