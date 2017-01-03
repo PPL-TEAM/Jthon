@@ -40,6 +40,7 @@
 ">"						return '>';
 "if"					return 'if';
 "else"					return 'else';
+"elif"                  return 'elif';
 "global"                return 'global';
 "def"					return 'def';
 "pass"					return 'pass';
@@ -53,9 +54,12 @@
 "while"					return 'while';
 "break"					return 'break';
 "continue"				return 'continue';
-"{"                     return '{'
-"}"                     return '}'
-"_"                     return '_'
+"{"                     return '{';
+"}"                     return '}';
+"_"                     return '_';
+"and"					return 'and';
+"or"					return 'or';
+"not"					return 'not';
 
 
 [0-9]+("."[0-9]+)?\b  	{return 'NUMBER';}
@@ -71,8 +75,8 @@
 
 %left  '+' '-'
 %left  '*' '/' '%'
-%right  '**'
-%left  '<' '<=' '>' '>=' '==' '!='
+%right  '**' 'not'
+%left  '<' '<=' '>' '>=' '==' '!=' 'and' 'or'
 %left UMINUS
 
 %nonassoc IF_WITHOUT_ELSE
@@ -148,7 +152,9 @@ selection
 	| 'if' expr ':' stmt 'else' ':' stmt 'end'	{
 		$$ = new AstNode('ifelse', {left : $2, middle: $4,right: $7});		
 	}
-	
+	|'if' expr ':' stmt 'elif' expr ':' stmt 'else' ':' stmt 'end' {
+		$$ = new AstNode('ifelifelse', {left1 : $2, left2 : $4, middle1: $6, middle2: $8, right: $11});
+	}
 	| 'while' expr ':' stmt 'end' {
 		$$ = new AstNode('while', {left : $2, right:$4});
 	}
@@ -271,6 +277,9 @@ expr
 	| expr '**' expr		{ $$ = new AstNode('**', {left : $1, right : $3});}
 	| expr '/' expr		{ $$ = new AstNode('/', {left : $1, right : $3});}
 	| expr '%' expr		{ $$ = new AstNode('%', {left : $1, right : $3});}
+	| expr 'and' expr	{ $$ = new AstNode('and', {left : $1, right : $3});}
+	| expr 'or' expr	{ $$ = new AstNode('or', {left : $1, right : $3});}
+	| 'not' expr	{ $$ = new AstNode('not', {right : $2});}
 	| expr '<' expr	{ $$ = new AstNode('<', {left : $1, right : $3});}
 	| expr '<=' expr	{ $$ = new AstNode('<=', {left : $1, right : $3});}
 	| expr '>' expr	{ $$ = new AstNode('>', {left : $1, right : $3});}

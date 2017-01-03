@@ -270,6 +270,16 @@ function eval(astNode) {
 				v = eval(astNode.right); 	
 			}
 			break;
+		case 'ifelifelse':
+			//if-elif-else
+			if(eval(astNode.left1)){
+				v = eval(astNode.left2);
+			}else if(eval(astNode.middle1)) {
+				v = eval(astNode.middle2);
+			}else{
+				v = eval(astNode.right);
+			}
+			break;
 		case 'while': 
 			// while
 			while(eval(astNode.left)) {
@@ -388,7 +398,28 @@ function eval(astNode) {
 					executionstack.top()[astNode.left.name] %= eval(astNode.right);
 
 				}			
-			break;	   	      	   
+			break;	
+		case 'and':
+			if(eval(astNode.left)&&eval(astNode.right)) {
+				v = true;
+			} else {
+				v = false;
+			}  	      	  
+			break; 
+		case 'or':
+			if(eval(astNode.left)||eval(astNode.right)) {
+				v = true;
+			} else {
+				v = false;
+			}  	      	  
+			break; 
+		case 'not':
+			if(!eval(astNode.right)) {
+				v = true;
+			} else {
+				v = false;
+			}  	      	  
+			break; 
 		case '>':
 			if(eval(astNode.left) >  eval(astNode.right)) {
 				v = true;

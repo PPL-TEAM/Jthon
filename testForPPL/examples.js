@@ -9,7 +9,7 @@ var examples = [{
 	code : "# += -= *= /= %=\nx = 6\nprint x\nx += 2\nprint x\nx -= 1\nprint x\nx *= 9\nprint x\nx /=  3\nprint x\nx %= 6\nprint x\n"
 }, {
 	name : "Condition",
-	code: "'''This program tests selection statements.\n\tIf and If-else, as well as boolean evaluations, <, > !=, ==, etc.'''\ny = 6\nif 5 > 1:\n\tprint 7\nend\nx = 20.0\nif x < 1000:\n\tprint x\nelse: \n\tprint 10\nend\nif x == 2:\n\tif y != x:\n\t\tprint 3\n\tend\nelse:\n\tprint y\nend\nif y >= 5:\n\tprint y\nend\n\nif y <= 6:\n\tprint y\nend"
+	code: "'''This program tests selection statements.\n\tIf, If-else and If-elif-else, as well as boolean evaluations, <, > !=, ==, etc.'''\ny = 6\nif 5 > 1:\n\tprint 7\nend\nx = 20.0\nif x < 1000:\n\tprint x\nelse: \n\tprint 10\nend\nif x == 2:\n\tif y != x:\n\t\tprint 3\n\tend\nelse:\n\tprint y\nend\nif y >= 5:\n\tprint y\nend\n\nif y <= 6:\n\tprint y\nend\nif 4 or 0:\n\tprint 6\nelif 5 > 1:\n\tprint 4\nelse:\n\tprint 10\nend\nif 4 and 0:\n\tprint 6\nelif 5 > 1:\n\tprint 4\nelse:\n\tprint 10\nend\nif 4 and 0:\n\tprint 6\nelif not 1:\n\tprint 4\nelse:\n\tprint 10\nend"
 }, {
 	name : 'Loop',
 	code : 'x = 0\nwhile x < 5:\n	x += 1\n	print x\nend\nprint "after loop"\nprint x\n\ny = 0\nwhile y < 8:\n	y += 1\n	break\n	print "no break action:"\n	y += 1\nend\nprint "after loop"\nprint y\n\nz = 0\nwhile z < 8:\n	z += 1\n	print z\n	continue\n	z += 1\n	print "no continue action:"\n	print z\nend\nprint "after loop"\nprint z\n'
